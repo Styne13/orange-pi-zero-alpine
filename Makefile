@@ -160,8 +160,10 @@ uboot-clean:					## remove most generated files in U-Boot folder
 uboot-mrproper:					## remove all generated files in U-Boot folder
 	@test ! -d $(UBOOT_DIR) || $(MAKE) -C $(UBOOT_DIR) mrproper
 
-.build-uboot: $(UBOOT_DIR) $(UBOOT_CONFIG)
+uboot-menuconfig: $(UBOOT_DIR) $(UBOOT_CONFIG)
 	$(MAKE) -C $(UBOOT_DIR) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) $(MENUCONFIG)
+
+.build-uboot: $(UBOOT_DIR) $(UBOOT_CONFIG)
 	$(MAKE) -C $(UBOOT_DIR) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE)
 
 ##@ Linux
@@ -200,8 +202,10 @@ linux-patch: $(LINUX_DIR)/		# patch xradio into linux source
 linux-unpatch: $(LINUX_DIR)/		# undo xradio patch
 	@cd $(LINUX_DIR); git apply -R $(ROOT_DIR)/$(CONFIG_DIR)/kernel.add-xradio.patch
 
-.build-linux: $(LINUX_DIR)/ $(LINUX_CONFIG) $(LINUX_DIR)/bootEnv.txt
+linux-menuconfig: $(LINUX_DIR)/ $(LINUX_CONFIG) $(LINUX_DIR)/bootEnv.txt
 	$(MAKE) -C $(LINUX_DIR) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) $(MENUCONFIG)
+
+.build-linux: $(LINUX_DIR)/ $(LINUX_CONFIG) $(LINUX_DIR)/bootEnv.txt
 	$(MAKE) -C $(LINUX_DIR) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) zImage
 ifndef NO_MODULES
 	$(MAKE) -f $(THIS_FILE) --no-print-director .build-modules
