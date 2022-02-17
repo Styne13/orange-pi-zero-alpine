@@ -1,0 +1,45 @@
+name: Docker Orange Pi Zero Alpine Image CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker Image
+      run: docker build -t orange-pi-zero-alpine-build:20.04 ./docker
+    - name: Build Orangepizero Alpine Image
+      run: docker run -e CORES=32 -v $PWD:/root/orange-pi-zero-alpine/ orange-pi-zero-alpine-build:20.04
+    - name: Export Version
+      run: echo "::set-output name=version::$(cat ALPINE_VERSION)"
+      id: version
+    - name: Upload Build Artifact Files
+      uses: actions/upload-artifact@v2.3.1
+      with:
+        name: orangepi-zero-alpine-image-${{ steps.version.outputs.version }}
+        path: orangepi-zero-alpine-image-${{ steps.version.outputs.version }}/
+    - name: Create Release
+      uses: actions/create-release@v1
+      id: create_release
+      with:
+        draft: false
+        prerelease: false
+        release_name: ${{ steps.version.outputs.version }}
+        tag_name: v${{ steps.version.outputs.version }}
+        body_path: CHANGELOG.md
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+    - name: Upload Kernel Artifacts
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: orangepi-zero-alpine-image-${{ steps.version.outputs.version }}.tar.gz
+        asset_name: orangepi-zero-alpine-image-${{ steps.version.outputs.version }}.tar.gz
+        asset_content_type: application/gzip

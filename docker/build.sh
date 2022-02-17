@@ -21,20 +21,26 @@ if [ -v $ALPINE_VERSION ]; then
 	ALPINE_VERSION=$(python3 -m lastversion --format tag alpine)
 fi
 
+#clone and switch to project directory
+if [ ! -d "orange-pi-zero-alpine" ]; then
+	git clone https://github.com/moonbuggy/orange-pi-zero-alpine.git
+fi
+cd orange-pi-zero-alpine
+
 #display Tags
 echo "linux-stable LTS tag: ${LINUX_TAG}"
 echo "u-boot tag: ${UBOOT_TAG}"
 echo "alpine version: ${ALPINE_VERSION}"
 
+#create changelog file
+echo "linux-stable LTS tag: ${LINUX_TAG}" >> CHANGELOG.md
+echo "u-boot tag: ${UBOOT_TAG}" >> CHANGELOG.md
+echo "alpine version: ${ALPINE_VERSION}" >> CHANGELOG.md
+
 #save tags for later use (e.g. automated export of build artifacts, tag/release)
 echo "${LINUX_TAG}" > LINUX_TAG
 echo "${UBOOT_TAG}" > UBOOT_TAG
 echo "${ALPINE_VERSION}" > ALPINE_VERSION
-
-if [ ! -d "orange-pi-zero-alpine" ]; then
-	git clone https://github.com/moonbuggy/orange-pi-zero-alpine.git
-fi
-cd orange-pi-zero-alpine
 
 ./configure
 
@@ -43,4 +49,9 @@ make -j ${CORES} linux-default
 make -j ${CORES} xradio
 make -j ${CORES} install
 
+#rename image folder
+mv files/ "orangepi-zero-alpine-image-${ALPINE_VERSION}"
+
+#create tar image archive
+tar czvf "orangepi-zero-alpine-image-${ALPINE_VERSION}.tar.gz" "orangepi-zero-alpine-image-${ALPINE_VERSION}"
 exit 0
