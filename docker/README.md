@@ -4,13 +4,13 @@ Image to build orangepi zero alpine linux images in a ubuntu docker container
 ## Build
 Execute the following command to build the container:
 ```
-docker build -t orange-pi-zero-alpine-build:20.04 ./docker
+docker build -t orange-pi-zero-alpine-build:22.04 ./docker
 ```
 
 ## Run
 Execute the following command form the main _orange-pi-zero-alpine_ directory:
 ```
-docker run -ti -e CORES=16 -v $PWD:/root/orange-pi-zero-alpine/ oorange-pi-zero-alpine-build:20.04
+docker run -ti -e CORES=$(grep -c processor /proc/cpuinfo) -v $PWD:/root/orange-pi-zero-alpine/ orange-pi-zero-alpine-build:22.04
 ```
 
 This issues a build with default configuration including uboot, linux kernel, xradio driver and alpine image.
