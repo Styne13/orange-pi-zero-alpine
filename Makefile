@@ -12,18 +12,18 @@
 # These can be modified as necessary:
 #
 UBOOT_TAG			?= v2022.01
-UBOOT_SOURCE		?= github.com/u-boot/u-boot -b $(UBOOT_TAG)
+UBOOT_SOURCE		?= github.com/u-boot/u-boot.git -b $(UBOOT_TAG)
 #UBOOT_SOURCE		?= github.com/linux-sunxi/u-boot-sunxi
-LINUX_TAG			?= v5.10.100
+LINUX_TAG		?= v6.1.65
 LINUX_SOURCE		?= git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git -b $(LINUX_TAG)
 #LINUX_SOURCE		?= github.com/linux-sunxi/linux-sunxi -b sunxi-next
-XRADIO_SOURCE		?= github.com/fifteenhex/xradio
+XRADIO_SOURCE		?= github.com/fifteenhex/xradio.git
 #XRADIO_SOURCE		?= github.com/moonbuggy/xradio
-XR819_FW_SOURCE		?= github.com/armbian/firmware
+XR819_FW_SOURCE	?= github.com/armbian/firmware.git
 REGDB_SOURCE		?= git.kernel.org/pub/scm/linux/kernel/git/sforshee/wireless-regdb
-ALPINE_VERSION		?= 3.15.0
+ALPINE_VERSION		?= 3.18.5
 ALPINE_SERVER		?= dl-cdn.alpinelinux.org
-OVERLAYS_SOURCE		?= github.com/armbian/sunxi-DT-overlays
+OVERLAYS_SOURCE	?= github.com/armbian/sunxi-DT-overlays.git
 
 UBOOT_DEFCONFIG		?= orangepi_zero_defconfig
 LINUX_DEFCONFIG		?= sunxi_defconfig

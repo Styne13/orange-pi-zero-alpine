@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #update this value if another LTS version is the longest supported version
-LINUX_LTS=5.10
+LINUX_LTS=6.1
 
 if [[ -z "${CORES}" ]]; then
 	echo "no option for cores set, default to 4!"
