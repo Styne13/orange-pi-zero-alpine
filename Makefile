@@ -177,7 +177,7 @@ linux-%: $(LINUX_DIR)/			## build linux with custom config, see 'make list-confi
 		rm -f $(CURRENT_CONFIG); \
 		cp $(CONFIG_DIR)/kernel.$*.mkconf $(CURRENT_CONFIG) 2>/dev/null; \
 		cp -f $(CONFIG_DIR)/bootEnv.$*.txt $(LINUX_DIR)/bootEnv.txt || cp -f $(CONFIG_DIR)/bootEnv.txt $(LINUX_DIR)/bootEnv.txt; \
-		$(MAKE) -f $(THIS_FILE) --no-print-directory .build-linux; \
+		yes "" | $(MAKE) -f $(THIS_FILE) --no-print-directory .build-linux; \
 	else \
 		echo $(CONFIG_DIR)/kernel.$*.config does not exist, cannot build.; \
 		exit 0; \
@@ -405,7 +405,7 @@ get-overlays: | $(OVERLAYS_DIR)/.git/info/sparse-checkout
 define git
 	@echo Checking ${1}..
 	@test ! -d ${3} \
-	  && git clone git://${2} ${4} ${3} \
+	  && git clone https://${2} ${4} ${3} \
 	  || git -C ${3} pull ${4}
 	@echo
 endef

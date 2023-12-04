@@ -3,29 +3,29 @@
 #update this value if another LTS version is the longest supported version
 LINUX_LTS=5.10
 
-if [ -v $CORES ]; then
+if [[ -z "${CORES}" ]]; then
 	echo "no option for cores set, default to 4!"
 	CORES=4
 fi
 
-if [ -v $LINUX_TAG ]; then
+if [[ -z "${LINUX_TAG}" ]]; then
 	#using github linux-stable mirror
-	LINUX_TAG=$(python3 -m lastversion --format tag --major ${LINUX_LTS} gregkh/linux)
+	LINUX_TAG=$(python3 -m lastversion --format tag --major "${LINUX_LTS}" gregkh/linux)
 fi
 
-if [ -v $UBOOT_TAG ]; then
+if [[ -z "${UBOOT_TAG}" ]]; then
 	UBOOT_TAG=$(python3 -m lastversion --format tag u-boot/u-boot)
 fi
 
-if [ -v $ALPINE_VERSION ]; then
+if [[ -z "${ALPINE_VERSION}" ]]; then
 	ALPINE_VERSION=$(python3 -m lastversion --format tag alpine)
 fi
 
 #clone and switch to project directory
-if [ ! -d "orange-pi-zero-alpine" ]; then
-	git clone https://github.com/moonbuggy/orange-pi-zero-alpine.git
+if [ -z "$(ls -A -- "orange-pi-zero-alpine")" ]; then
+	git clone https://github.com/Styne13/orange-pi-zero-alpine.git
 fi
-cd orange-pi-zero-alpine
+cd orange-pi-zero-alpine || exit
 
 #display Tags
 echo "linux-stable LTS tag: ${LINUX_TAG}"
@@ -44,10 +44,10 @@ echo "${ALPINE_VERSION}" > ALPINE_VERSION
 
 ./configure
 
-make -j ${CORES} uboot-defconfig
-make -j ${CORES} linux-default
-make -j ${CORES} xradio
-make -j ${CORES} install
+make -j "${CORES}" uboot-defconfig
+make -j "${CORES}" linux-armbian
+make -j "${CORES}" xradio
+make -j "${CORES}" install
 
 #rename image folder
 mv files/ "orangepi-zero-alpine-image-${ALPINE_VERSION}"
