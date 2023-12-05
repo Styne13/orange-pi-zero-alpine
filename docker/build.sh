@@ -10,15 +10,15 @@ fi
 
 if [[ -z "${LINUX_TAG}" ]]; then
 	#using github linux-stable mirror
-	LINUX_TAG=$(python3 -m lastversion --format tag --major "${LINUX_LTS}" gregkh/linux)
+	LINUX_TAG=$(python3 -m lastversion --format tag --major "${LINUX_LTS}" gregkh/linux | tr -d '[:blank:]')
 fi
 
 if [[ -z "${UBOOT_TAG}" ]]; then
-	UBOOT_TAG=$(python3 -m lastversion --format tag u-boot/u-boot)
+	UBOOT_TAG=$(python3 -m lastversion --format tag u-boot/u-boot | tr -d '[:blank:]')
 fi
 
 if [[ -z "${ALPINE_VERSION}" ]]; then
-	ALPINE_VERSION=$(python3 -m lastversion --format tag alpine)
+	ALPINE_VERSION=$(python3 -m lastversion --format tag alpine | tr -d '[:blank:]')
 fi
 
 #clone and switch to project directory

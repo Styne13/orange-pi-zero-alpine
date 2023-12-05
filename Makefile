@@ -469,7 +469,7 @@ $(ALPINE_ARCHIVE):
 $(OVERLAYS_DIR)/.git/info/sparse-checkout: | $(SOURCE_DIR)/
 	@mkdir -p $(OVERLAYS_DIR)/.git/info
 	@git -C $(OVERLAYS_DIR) init
-	@git -C $(OVERLAYS_DIR) remote add -f origin git://$(OVERLAYS_SOURCE)
+	@git -C $(OVERLAYS_DIR) remote add -f origin https://$(OVERLAYS_SOURCE)
 	@git -C $(OVERLAYS_DIR) config core.sparseCheckout true
 	@echo "sun8i-h3/" >> $(OVERLAYS_DIR)/.git/info/sparse-checkout
 
