@@ -65,18 +65,37 @@ FDISK_OUTPUT=$(sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk $DEVICE
 	p		# primary partition
 	1		# numbered 1
 	2048	# from sector 2048
-			# to the last sector
+	+200M	# up to 200M
 	t		# of type
 	c		# W95 FAT32 (LBA)
 	a		# make it bootable
-	w		# save changes
-	q		# exit fdisk
+	w		# save changes and exit
 EOF
 )
 
-echo "Formating partition.."
-mkfs.vfat -n ALPINE "$DEVICE"1 >/dev/null \
+# wait for fdisk to finish
+sleep 5
+
+FDISK_OUTPUT=$(sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk $DEVICE
+	n		# add new
+	p		# primary partition
+	2		# numbered 2
+	411648	# from sector 411648
+			# to the last sector
+	w		# save changes and exit
+EOF
+)
+
+# wait for fdisk to finish
+sleep 5
+
+echo "Formating boot partition.."
+mkfs.vfat -n ALPINE_BOOT "$DEVICE"1 >/dev/null \
 	|| { echo "Error: failed to make vfat partition"; exit 1; }
+
+echo "Formating root partition.."
+mkfs.ext4 -F -L ALPINE_DATA "$DEVICE"2 >/dev/null \
+	|| { echo "Error: failed to make ext4 partition"; exit 1; }
 
 cleanup() {
 	mountpoint -q $TEMP_MOUNT && umount "$TEMP_MOUNT"
