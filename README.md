@@ -123,6 +123,9 @@ Any other `configs/*.config` files that may be present are works in progress and
 ### Wired Ethernet
 Seems to function just fine.
 
+#### USB OTG Ethernet USB0
+By default the g_cdc kernel module is loaded and an ethernet device _USB0_ is displayed, which can be used e.g. for ssh sessions and file transfer between host pc and orangepi.
+
 ### WiFi
 The xradio WiFi is generally functional, although there will be many "missed interrupt" warnings in the log and some (presumably) associated packet loss. This seems to be caused by an issue in the hardware and/or the driver and is not exclusive to this build.
 
@@ -146,6 +149,9 @@ In theory it should be possible to make haveged start before wpa_supplicant on t
 The UART TX/RX/GND pins, next to the ethernet connector, work as advertised, allowing monitoring of the boot process and providing serial console access as you'd expect.
 
 Make sure you're using a 3.3V serial adapter, the board won't like 5V RS-232 (and if you try +/-15V old-school RS-232 set up a video camera first because I'm curious which components will let the magic smoke out first).
+
+#### USB OTG Serial
+By default the g_cdc kernel module is loaded and console interface is set to ttyGS0, too. Host will display ttyACM0, which can be used to log into the device.
 
 The serial console runs at 115,200 baud (8N1).
 

@@ -3,7 +3,7 @@ setenv load_addr "0x44000000"
 setenv overlay_prefix "sun8i-h2-plus-"
 setenv machid 1029
 
-setenv bootargs earlyprintk /boot/zImage modules=loop,squashfs,sd-mod,usb-storage,xr819 modloop=/boot/modloop-sunxi console=${console}
+setenv bootargs earlyprintk /boot/zImage modules=loop,squashfs,sd-mod,usb-storage,xr819,dwc2,g_cdc modloop=/boot/modloop-sunxi console=${console} console=ttyGS0,115200
 load mmc 0:1 ${fdt_addr_r} /boot/dtbs/sun8i-h2-plus-orangepi-zero.dtb
 load mmc 0:1 0x41000000 /boot/zImage
 
