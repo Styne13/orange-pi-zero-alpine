@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([orange-pi-zero-alpine], [3.18.5], [])
+AC_INIT([orange-pi-zero-alpine], [3.19.1], [])
 
 m4_define([mb_include], [m4_include][([$1])])dnl
 

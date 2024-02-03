@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #update this value if another LTS version is the longest supported version
-LINUX_LTS=6.1
+LINUX_LTS=6.6
 
 if [[ -z "${CORES}" ]]; then
 	echo "no option for cores set, default to 4!"
@@ -53,5 +53,5 @@ make -j "${CORES}" install
 mv files/ "orangepi-zero-alpine-image-${ALPINE_VERSION}"
 
 #create tar image archive
-tar czvf "orangepi-zero-alpine-image-${ALPINE_VERSION}.tar.gz" "orangepi-zero-alpine-image-${ALPINE_VERSION}"
+tar czvf "orangepi-zero-alpine-image-${ALPINE_VERSION}.tar.gz" write_sd.sh "orangepi-zero-alpine-image-${ALPINE_VERSION}"
 exit 0
