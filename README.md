@@ -107,6 +107,44 @@ Initial configuration on first boot can be done with `alpine-setup`. It's a good
 
 At some point I plan to customize the OS a bit more, integrating a rootfs builder that allows package selection into the build process in one way or another.
 
+### Sys installation
+Create an sd card with _write_sd.sh_ as usual, spin up the orangepi and run _setup-alpine_.
+
+When asked to do the disk-setup answer the question about _mount installation medium '/dev/mmcblk0p1'_ with 'y', choose mmcblk0, format it and choose sys installation.
+
+Before reboot you need to copy some files from the current system to the new rootfs and edit the esyslinux.conf to run our own kernel with boot options:
+- mount mmcblk0p1 (boot) and mmcblk0p3 (root) e.g. in /media
+- download and unpack the latest release of this git repo(e.g. on mmcblk0p3 to have enough space)
+- copy zImage and dtbs folder to /media/mmcblk0p1/
+- add xr819, dwc2 and g_cdc in a separat line in /media/mmcblk0p3/etc/modules to load additional kernel modules
+- dump the initramfs:
+```
+apk add u-boot-tools
+dumpimage -l initramfs-sunxi
+dumpimage -T ramdisk -o rootfs.xz initramfs-sunxi
+unxz rootfs.xz
+mkdir initramfs-sunxi
+cd initramfs-sunxi
+cpio -id < ../rootfs
+```
+- copy lib/modules/x.x.xx_opizero_default folder from initramfs-sunxi to /media/mmcblk0p3/lib/modules/
+- copy lib/firmware/ folder content from initramfs-sunxi to /media/mmcblk0p3/lib/firmware to have the xradio firmware in place
+- adapt /media/mmcblk0p1/extlinux/extlinux.conf to load own kernel with g_cdc module for serial communication:
+```
+menu title Alpine Linux
+timeout 50
+default lts
+
+label lts
+menu label Linux lts
+kernel /zImage
+initrd /initramfs-lts
+fdtdir /dtbs
+fdt /dtbs/sun8i-h2-plus-orangepi-zero.dtb
+fdtoverlays /dtbs/overlays/sun8i-h2-plus-usbhost0.dtbo /dtbs/overlays/sun8i-h2-plus-usbhost1.dtbo /dtbs/overlays/sun8i-h2-plus-usbhost2.dtbo /dtbs/overlays/sun8i-h2-plus-usbhost3.dtbo
+append root=UUID={UUID-from-install-process} modules=sd-mod,usb-storage,ext4,xr819,dwc2,g_cdc quiet rootfstype=ext4 console=${console} console=ttyGS0,115200
+```
+
 ### DT Overlays
 
 DT overlays can be applied at boot using the `boot/bootEnv.txt` file (which will be in `/media/mmcblk0p1/` from within the booted OS). The environment variable `overlays` should be set to a space separated string of overlays to load. The overlay DTBO files themselves will be in `boot/dtbs/overlays` and prefixed with `sun8i-h2-plus-`.
