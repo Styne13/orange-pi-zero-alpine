@@ -10,36 +10,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Build the Docker Image
       run: docker build -t orange-pi-zero-alpine-build:20.04 ./docker
     - name: Build Orangepizero Alpine Image
       run: docker run -e CORES=$(grep -c processor /proc/cpuinfo) -v $PWD:/root/orange-pi-zero-alpine/ orange-pi-zero-alpine-build:20.04
     - name: Export Version
-      run: echo "::set-output name=version::$(cat ALPINE_VERSION)"
+      run: echo "version=$(cat ALPINE_VERSION)" >> $GITHUB_OUTPUT
       id: version
     - name: Upload Build Artifact Files
-      uses: actions/upload-artifact@v2.3.1
+      uses: actions/upload-artifact@v4
       with:
         name: orangepi-zero-alpine-image-${{ steps.version.outputs.version }}
         path: orangepi-zero-alpine-image-${{ steps.version.outputs.version }}/
     - name: Create Release
-      uses: actions/create-release@v1
+      uses: ncipollo/release-action@v1
       id: create_release
       with:
         draft: false
         prerelease: false
-        release_name: ${{ steps.version.outputs.version }}
-        tag_name: v${{ steps.version.outputs.version }}
-        body_path: CHANGELOG.md
+        name: ${{ steps.version.outputs.version }}
+        tag: v${{ steps.version.outputs.version }}
+        bodyFile: CHANGELOG.md
       env:
         GITHUB_TOKEN: ${{ github.token }}
     - name: Upload Kernel Artifacts
-      uses: actions/upload-release-asset@v1
+      uses: svenstaro/upload-release-action@v2
       env:
         GITHUB_TOKEN: ${{ github.token }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: orangepi-zero-alpine-image-${{ steps.version.outputs.version }}.tar.gz
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: orangepi-zero-alpine-image-${{ steps.version.outputs.version }}.tar.gz
         asset_name: orangepi-zero-alpine-image-${{ steps.version.outputs.version }}.tar.gz
-        asset_content_type: application/gzip
+        tag: v${{ steps.version.outputs.version }}
