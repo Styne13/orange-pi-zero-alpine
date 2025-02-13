@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #update this value if another LTS version is the longest supported version
-LINUX_LTS=6.6
+LINUX_LTS=6.12
 
 if [[ -z "${CORES}" ]]; then
 	echo "no option for cores set, default to 4!"
@@ -15,6 +15,7 @@ fi
 
 if [[ -z "${UBOOT_TAG}" ]]; then
 	UBOOT_TAG=$(python3 -m lastversion --format tag u-boot/u-boot | tr -d '[:blank:]')
+	UBOOT_TAG="v2022.01"
 fi
 
 if [[ -z "${ALPINE_VERSION}" ]]; then
